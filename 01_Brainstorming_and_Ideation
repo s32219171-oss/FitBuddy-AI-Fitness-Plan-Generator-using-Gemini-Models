@@ -1,0 +1,45 @@
+FitBuddy – AI Fitness Plan Generator using Gemini Models
+
+Phase 1 – Brainstorming & Ideation
+
+1. Problem Statement
+
+Many people find it difficult to create a fitness plan that matches their personal goals, fitness level, and available time.
+
+2. Proposed Solution
+
+FitBuddy is an AI-based application that uses Gemini models to generate a personalized fitness plan based on the user's input.
+
+3. Objectives
+
+- Generate personalized fitness plans using AI.
+- Make fitness planning simple and easy.
+- Provide plans based on the user's fitness goals and requirements.
+
+4. Target Users
+
+- Beginners
+- Students
+- Fitness enthusiasts
+
+5. Key Features
+
+- User fitness details input
+- AI-powered fitness plan generation
+- Personalized workout schedule
+- Simple and user-friendly interface
+
+6. Basic Workflow
+
+User Input → FitBuddy → Gemini Model → Personalized Fitness Plan
+
+7. Expected Outcome
+
+A simple AI application that generates a structured fitness plan according to the user's requirements.
+
+8. Technologies
+
+- Python
+- Gemini Models
+- Streamlit
+- GitHub
