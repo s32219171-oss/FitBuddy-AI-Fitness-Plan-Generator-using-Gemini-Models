@@ -1,0 +1,47 @@
+FitBuddy – AI Fitness Plan Generator using Gemini Models
+
+Phase 2 – Requirement Analysis
+
+1. Functional Requirements
+
+- User should enter basic fitness details.
+- User should select their fitness goal.
+- The system should send the user details to the Gemini model.
+- Gemini should generate a personalized fitness plan.
+- The generated plan should be displayed clearly to the user.
+
+2. Input Requirements
+
+The application may collect:
+
+- Age
+- Fitness goal
+- Fitness level
+- Workout days
+- Workout duration
+- Equipment availability
+
+3. Software Requirements
+
+- Python
+- Gemini API / Gemini Model
+- Streamlit
+- GitHub
+- Internet connection
+
+4. Hardware Requirements
+
+- Laptop or desktop
+- Minimum 4 GB RAM
+- Internet connection
+
+5. Non-Functional Requirements
+
+- Simple and user-friendly interface
+- Fast response
+- Reliable output
+- Secure handling of user input
+
+6. Expected Result
+
+The system should generate a structured and personalized fitness plan based on the user's input using the Gemini model.
