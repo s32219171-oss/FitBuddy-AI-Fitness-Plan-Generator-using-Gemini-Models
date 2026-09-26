@@ -1,6 +1,7 @@
 
 import streamlit as st
 from google import genai
+import time
 
 st.set_page_config(
     page_title="FitBuddy",
@@ -16,7 +17,7 @@ st.info(
     "a personalized fitness plan."
 )
 
-# Gemini API setup
+# Gemini API
 try:
     api_key = st.secrets["GEMINI_API_KEY"]
     client = genai.Client(api_key=api_key)
@@ -67,6 +68,7 @@ if st.button(
 ):
 
     if client is None:
+
         st.error(
             "Gemini API key is not configured. "
             "Please check Streamlit Secrets."
@@ -100,7 +102,6 @@ Generate:
 Make the plan suitable for the user's fitness level.
 Keep the explanation simple and easy to follow.
 
-Important:
 This is general fitness guidance and not medical advice.
 """
 
@@ -110,10 +111,29 @@ This is general fitness guidance and not medical advice.
                 "🤖 Gemini is creating your personalized plan..."
             ):
 
-                response = client.models.generate_content(
-                    model="gemini-3.8-flash",
-                    contents=prompt
-                )
+                response = None
+
+                # Try up to 3 times if Gemini is temporarily unavailable
+                for attempt in range(3):
+
+                    try:
+
+                        response = client.models.generate_content(
+                            model="gemini-3.8-flash",
+                            contents=prompt
+                        )
+
+                        break
+
+                    except Exception as error:
+
+                        if "503" in str(error) and attempt < 2:
+
+                            time.sleep(5)
+
+                        else:
+
+                            raise error
 
             st.success(
                 "✅ AI Fitness Plan Generated Successfully!"
@@ -128,6 +148,7 @@ This is general fitness guidance and not medical advice.
             st.write(f"**Age:** {age}")
             st.write(f"**Goal:** {goal}")
             st.write(f"**Fitness Level:** {level}")
+
             st.write(
                 f"**Workout Days:** {days} days/week"
             )
@@ -151,11 +172,12 @@ This is general fitness guidance and not medical advice.
         except Exception as e:
 
             st.error(
-                "Unable to generate the AI fitness plan."
+                "Gemini is temporarily unavailable. "
+                "Please try again after a few minutes."
             )
 
             st.caption(
-                f"Error: {e}"
+                f"Technical error: {e}"
             )
 
 st.markdown("---")
