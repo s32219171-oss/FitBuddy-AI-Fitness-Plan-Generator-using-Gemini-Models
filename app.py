@@ -17,7 +17,7 @@ st.info(
     "a personalized fitness plan."
 )
 
-# Gemini API
+# Gemini API setup
 try:
     api_key = st.secrets["GEMINI_API_KEY"]
     client = genai.Client(api_key=api_key)
@@ -79,7 +79,7 @@ if st.button(
         prompt = f"""
 You are FitBuddy, an AI fitness plan generator.
 
-Create a simple and personalized weekly fitness plan.
+Create a simple personalized weekly fitness plan.
 
 User details:
 Name: {name if name else "User"}
@@ -105,35 +105,33 @@ Keep the explanation simple and easy to follow.
 This is general fitness guidance and not medical advice.
 """
 
-        try:
+        response = None
+        last_error = None
 
-            with st.spinner(
-                "🤖 Gemini is creating your personalized plan..."
-            ):
+        # Retry temporary Gemini server errors
+        for attempt, wait_time in enumerate([0, 5, 10, 20]):
 
-                response = None
+            if wait_time > 0:
+                time.sleep(wait_time)
 
-                # Try up to 3 times if Gemini is temporarily unavailable
-                for attempt in range(3):
+            try:
 
-                    try:
+                response = client.models.generate_content(
+                    model="gemini-3.8-flash",
+                    contents=prompt
+                )
 
-                        response = client.models.generate_content(
-                            model="gemini-3.8-flash",
-                            contents=prompt
-                        )
+                if response and response.text:
+                    break
 
-                        break
+            except Exception as e:
 
-                    except Exception as error:
+                last_error = e
 
-                        if "503" in str(error) and attempt < 2:
+                if "503" not in str(e):
+                    break
 
-                            time.sleep(5)
-
-                        else:
-
-                            raise error
+        if response and response.text:
 
             st.success(
                 "✅ AI Fitness Plan Generated Successfully!"
@@ -144,15 +142,12 @@ This is general fitness guidance and not medical advice.
             st.write(
                 f"**Name:** {name if name else 'User'}"
             )
-
             st.write(f"**Age:** {age}")
             st.write(f"**Goal:** {goal}")
             st.write(f"**Fitness Level:** {level}")
-
             st.write(
                 f"**Workout Days:** {days} days/week"
             )
-
             st.write(
                 f"**Duration:** {duration} minutes"
             )
@@ -169,16 +164,15 @@ This is general fitness guidance and not medical advice.
                 "consult a qualified healthcare or fitness professional."
             )
 
-        except Exception as e:
+        else:
 
             st.error(
-                "Gemini is temporarily unavailable. "
-                "Please try again after a few minutes."
+                "Gemini is temporarily busy. "
+                "Please try Generate again after a short wait."
             )
 
-            st.caption(
-                f"Technical error: {e}"
-            )
+            if last_error:
+                st.caption(f"Technical error: {last_error}")
 
 st.markdown("---")
 
